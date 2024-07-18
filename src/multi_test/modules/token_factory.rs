@@ -110,8 +110,11 @@ impl TokenFactory<'_> {
 
         // Charge denom creation fee
         let fee = coin_from_sdk_string(self.denom_creation_fee)?;
-        let fee_msg = BankMsg::Burn { amount: vec![fee] };
-        router.execute(api, storage, block, sender, fee_msg.into())?;
+        println!("denom creation fee: {:?}", fee);
+        if !fee.amount.is_zero() {
+            let fee_msg = BankMsg::Burn { amount: vec![fee] };
+            router.execute(api, storage, block, sender, fee_msg.into())?;
+        }
 
         let create_denom_response = MsgCreateDenomResponse {
             new_token_denom: denom.clone(),
